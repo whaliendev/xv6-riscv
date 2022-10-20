@@ -103,10 +103,12 @@ runcmd(struct cmd *cmd)
     if(pipe(p) < 0)
       panic("pipe");
     if(fork1() == 0){
-      close(1);
-      dup(p[1]);
+      close(1);   // close stdout
+      dup(p[1]);  // assign p[1](the wirte end) to stdout
       close(p[0]);
       close(p[1]);
+      // at this time, there is only one open fd in child process, which is 
+      // stdout, and the value of stdout is exactly p[1]
       runcmd(pcmd->left);
     }
     if(fork1() == 0){
