@@ -106,6 +106,11 @@ atoi(const char *s)
   return n;
 }
 
+/// @brief copy n bytes from vsrc to vdst
+/// @param vdst dest buffer
+/// @param vsrc src buffer 
+/// @param n number of bytes
+/// @return vdst, the dest buffer starting point
 void*
 memmove(void *vdst, const void *vsrc, int n)
 {
