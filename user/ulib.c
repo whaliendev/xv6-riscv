@@ -14,6 +14,10 @@ _main()
   exit(0);
 }
 
+/// @brief copy literal string from t to s
+/// @param s destination
+/// @param t source
+/// @return s
 char*
 strcpy(char *s, const char *t)
 {
