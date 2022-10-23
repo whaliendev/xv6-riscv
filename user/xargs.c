@@ -12,6 +12,7 @@ main(int argc, char **argv)
   int idx=0, st;
   char ch;
   // if we have to pass params to exec, use char * array. 
+  // or you will fail to execute;
   char *cargv[MAXARG];
   char argvs[MAXARG][MAXARG];
 
