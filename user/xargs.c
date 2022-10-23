@@ -1,43 +1,42 @@
-#include<kernel/types.h>
-#include<user/user.h>
+#include "kernel/types.h"
+#include "kernel/stat.h"
+#include "kernel/fcntl.h"
+#include "kernel/param.h"
+#include "kernel/fs.h"
+#include "user/user.h"
 
-int main(int args,char *argv[]){
-    char *argExec[32];
-    char M[32][32];
-    for(int i=0;i<32;i++){
-        argExec[i]=M[i];
+
+int 
+main(int argc, char **argv)
+{
+  int idx=0, st;
+  char ch;
+  // if we have to pass params to exec, use char * array. 
+  char *cargv[MAXARG];
+  char argvs[MAXARG][MAXARG];
+
+  for(int i=0; i<MAXARG; i++)
+    cargv[i] = argvs[i];
+
+  for(int i=1;i<argc;i++)
+    strcpy(cargv[i-1], argv[i]);
+
+  st = argc-1;
+  while(read(0, &ch, sizeof(ch))) {
+    if(ch=='\n') {
+      cargv[st][idx]='\0';
+      cargv[st+1]=0;
+      idx=0;
+      if(fork()==0) {
+        exec(cargv[0], (char **)cargv);
+        break;
+      } else {
+        wait(0);
+      }
+    } else {
+      cargv[st][idx++] = ch;
     }
+  }
 
-    for(int i=1;i<args;i++){
-        strcpy(argExec[i-1],argv[i]);
-    }
-
-    char buf[64];
-    char *p;
-    p=buf;
-
-    int i=args-1;
-    while(read(0,p,1)>0){
-        if(*p=='\n'){
-            *p='\0';
-
-            if(strlen(buf)>0){
-                strcpy(argExec[i++],buf);
-            }
-
-            argExec[i]=0;
-            i=args-1;
-            p=buf;
-
-            if(fork()){
-                wait(0);
-            }else{
-                exec(argExec[0],argExec);
-            }
-        }else{
-            p++;
-        }
-    }
-
-    exit(0);
+  exit(0);
 }
